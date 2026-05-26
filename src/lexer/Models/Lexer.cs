@@ -153,6 +153,7 @@ public class Lexer
         ['∩'] = TokenType.INTERSECT,
         ['−'] = TokenType.DIFFERENCE,
         ['-'] = TokenType.DIFFERENCE,
+        ['×'] = TokenType.CARTESIEN_PRODUCT,
 
         ['¬'] = TokenType.NOT,
         ['>'] = TokenType.GT,

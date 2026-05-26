@@ -9,6 +9,7 @@ public enum TokenType
     //Inner Operator  
     JOIN,     
     DIFFERENCE, 
+    CARTESIEN_PRODUCT,
 
     UNION,
     INTERSECT,

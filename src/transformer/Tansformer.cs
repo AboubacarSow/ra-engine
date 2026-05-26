@@ -9,10 +9,20 @@ public class Transformer
     {
         ConditionNode previous = node.Condition;
         ExpressionNode newsource=node.Source;
-        while (newsource is SelectionNode s)
+        while (newsource is not RelationNode)
         {
-            previous = new AndNode(s.Condition,previous);
-            newsource = s.Source;
+            if(newsource is SelectionNode s)
+            {
+                previous = new AndNode(s.Condition,previous);
+                newsource = s.Source;
+            }
+            else {
+                if(newsource is ProjectionNode projection)
+                {
+                    newsource = projection.Source;
+                    continue;
+                }
+            }
         }
         return new SelectionNode(previous,newsource);
         

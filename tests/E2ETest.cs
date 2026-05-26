@@ -123,6 +123,18 @@ public class E2ETest
 
     }
 
+    [Fact]
+    public void Product_Cartesian_Should_Generate_Correct_Sql()
+    {
+        var input = "students × departments";
+        var transpiler = new TranspilerService();
+
+        var result = transpiler.Transpile(input);
+
+        var expected = "SELECT * FROM students, departments";
+        Assert.Equal(Normalize(expected),Normalize(result));
+    }
+
     private string Normalize(string result)
     {
         return result

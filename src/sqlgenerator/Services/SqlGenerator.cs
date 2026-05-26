@@ -26,8 +26,17 @@ public class SqlGenerator
 
             UnionNode union  => GenerateUnionSql(union),
 
+            CartesienProductNode cartesien => GenerateProductSql(cartesien),
+
             _ => throw new Exception($"Unsupported node type: {node.GetType().Name}")
         };
+    }
+
+    private string GenerateProductSql(CartesienProductNode cartesien)
+    {
+        var left = GenerateSql(cartesien.Left);
+        var right = ExtractTableName(cartesien.Right);
+        return $"{left}, {right}";
     }
 
     private string GenerateProjectionSql(ProjectionNode node)

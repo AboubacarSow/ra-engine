@@ -34,6 +34,7 @@ public class Parser
             TokenType.UNION => true,
             TokenType.INTERSECT => true,
             TokenType.THETA_JOIN => true,
+            TokenType.CARTESIEN_PRODUCT => true,
             _ => false
         };
     }
@@ -66,6 +67,7 @@ public class Parser
         return type switch
         {
             TokenType.JOIN => new JoinNode(left,right),
+            TokenType.CARTESIEN_PRODUCT => new CartesienProductNode(left, right),
             TokenType.NATURAL_JOIN => new NaturalJoinNode(((RelationNode)left).Name,((RelationNode)right).Name),
             TokenType.THETA_JOIN => new ThetaJoinNode(left,right,condition),
             TokenType.DIFFERENCE => new DifferenceNode(left,right),
@@ -96,11 +98,12 @@ public class Parser
         Eat(TokenType.IDENTIFIER);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new RenameNode(alias,source);
     }
+
     private ExpressionNode ParseProjection()
     {
         Eat(TokenType.PROJECT);
@@ -110,7 +113,7 @@ public class Parser
         Eat(TokenType.RSB);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new ProjectionNode(attributes, source);
@@ -160,7 +163,7 @@ public class Parser
         Eat(TokenType.RSB);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new SelectionNode(condition, source);
