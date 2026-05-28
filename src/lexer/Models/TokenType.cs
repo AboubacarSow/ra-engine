@@ -10,6 +10,7 @@ public enum TokenType
     JOIN,     
     DIFFERENCE, 
     CARTESIEN_PRODUCT,
+    DIVISION,
 
     UNION,
     INTERSECT,

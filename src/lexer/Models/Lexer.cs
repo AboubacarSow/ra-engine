@@ -154,6 +154,7 @@ public class Lexer
         ['−'] = TokenType.DIFFERENCE,
         ['-'] = TokenType.DIFFERENCE,
         ['×'] = TokenType.CARTESIEN_PRODUCT,
+        ['÷'] = TokenType.DIVISION,
 
         ['¬'] = TokenType.NOT,
         ['>'] = TokenType.GT,
