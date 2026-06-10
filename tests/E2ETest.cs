@@ -62,11 +62,36 @@ public class E2ETest
         var sql = new SqlGenerator();
         var result = sql.GenerateSql(ast);
         Assert.Equal(
-            "SELECT * FROM Students JOIN Teachers ON (Students.id = 'Teachers.student_id')",
+            "SELECT * FROM Students JOIN Teachers ON (Students.id = Teachers.student_id)",
             Normalize(result)
         );
     }
+    [Fact]
+    public void NaturalJoin_Expression_Should_Generate_Correct_Sql()
+    {
+        var input ="σ [age > 18] (Student ⋈ Enrollement)";
+        var transpiler = new TranspilerService();
+        var result = transpiler.Transpile(input);
 
+        var expected = "SELECT * FROM Student NATURAL JOIN Enrollement WHERE (age > 18)";
+        Assert.Equal(
+            Normalize(expected),
+            Normalize(result)
+        );
+    }
+    [Fact]
+    public void Multiple_NaturalJoin_Expression_Should_Generate_Correct_Sql()
+    {
+        var input = "σ [age > 18] (students ⋈ enrolled ⋈ departments)";
+        var transpiler = new TranspilerService();
+        var result = transpiler.Transpile(input);
+
+        var expected = "SELECT * FROM students NATURAL JOIN enrolled NATURAL JOIN departments WHERE (age > 18)";
+        Assert.Equal(
+            Normalize(expected),
+            Normalize(result)
+        );
+    }
     [Fact]
     public void Difference_Expression_Should_Generate_Correct_Sql()
     {
@@ -135,7 +160,9 @@ public class E2ETest
         Assert.Equal(Normalize(expected),Normalize(result));
     }
 
-    private string Normalize(string result)
+    
+
+    private static string Normalize(string result)
     {
         return result
             .Replace("\r", "")

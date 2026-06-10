@@ -2,10 +2,10 @@ namespace core.Nodes;
 
 public class NaturalJoinNode : ExpressionNode
 {
-    public string Left { get; }
-    public string Right { get; }
+    public ExpressionNode Left { get; }
+    public ExpressionNode Right { get; }
 
-    public NaturalJoinNode(string left, string right)
+    public NaturalJoinNode(ExpressionNode left, ExpressionNode right)
     {
         Left = left;
         Right = right;

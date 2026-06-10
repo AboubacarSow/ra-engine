@@ -14,7 +14,7 @@ public class SqlGenerator
 
             SelectionNode selection => GenerateSelectionSql(selection),
 
-            JoinNode join => GenerateJoinSql(join),
+            NaturalJoinNode join => GenerateJoinSql(join),
 
             ThetaJoinNode thetaJoin => GenerateThetaJoinSql(thetaJoin),
 
@@ -48,6 +48,9 @@ public class SqlGenerator
 
         }
         List<string> candidate_attributes = [.. division.Left.Attributes.Except(division.Right.Attributes)];
+        if(candidate_attributes.Count==0){
+            throw new Exception($"Candidate Attribute not found");
+        }
         var key_attributes = string.Join(",", candidate_attributes);
         sourceSql = sourceSql.Replace("*", $"DISTINCT {key_attributes}");
         var left_alias = ExtractTableName(division.Left.Source).ToLower()[0];
@@ -55,19 +58,16 @@ public class SqlGenerator
         var innerAttributes = string.Join(", ", division.Right.Attributes);
         var sourceSqlwith_righAttributes = GenerateSql(division.Left.Source)
         .Replace("*", $"DISTINCT {innerAttributes}");
-
-        sourceSql = sourceSql.Replace($"{innerAttributes}", "")
-        .Replace(",  FROM", " FROM");
         string inputComparaison="";
 
         for(var index=0;index<candidate_attributes.Count; index++)
         {
-            var comparaison = $"{left_alias}2.{candidate_attributes[index]}={left_alias}.{candidate_attributes[index]}";
+            inputComparaison =string.Concat(inputComparaison,
+             $"{left_alias}2.{candidate_attributes[index]}={left_alias}.{candidate_attributes[index]}");
             if (!(index + 1 == candidate_attributes.Count))
             {
-                comparaison = string.Concat(comparaison," AND ");
+                inputComparaison = string.Concat(inputComparaison," AND ");
             }
-            inputComparaison =string.Concat(inputComparaison, comparaison);
         }
 
 
@@ -125,7 +125,7 @@ public class SqlGenerator
         return $"'{right}'";
     }
 
-    private string GenerateJoinSql(JoinNode node)
+    private string GenerateJoinSql(NaturalJoinNode node)
     {
         var leftsql = GenerateSql(node.Left);
         var rightSql = ExtractTableName(node.Right);
