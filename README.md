@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.0-blue" alt="Version"/>
+  <img src="https://img.shields.io/badge/version-1.0.1-blue" alt="Version"/>
   <img src="https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet" alt=".NET 9"/>
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License"/>
   <a href="https://kcodd.onrender.com">
@@ -54,6 +54,10 @@ Try it out → [kcodd.onrender.com](https://kcodd.onrender.com)
 | Union | ∪ | ✅ |
 | Intersection | ∩ | ✅ |
 | Difference | − | ✅ |
+| Product Cartesien | ×| ✅ |
+| Division | ÷ | ✅ |
+
+
 
 ---
 
@@ -79,12 +83,15 @@ The project explores:
 ## Highlights
 
 - Relational Algebra → SQL transpilation
-- Compiler-style architecture (Lexer → Parser → AST → SQL)
+- Compiler-style architecture (Lexer → Parser → AST → Transformer → SQL)
+- Introduced Transformer layer for query processing
 - Interactive Blazor playground
+- Fixed nested expression parsing and evaluation issues
 - CLI playground
 - E2E and parser testing
 - Dark/light theme
 - Nested relational algebra expressions
+
 ---
 
 ## Playground Preview
@@ -116,7 +123,7 @@ The project explores:
 
 ## Current Status
 
-> Current version: `v1.0.0`
+> Current version: `v1.0.1`
 
 > **In Active Development** 
 
@@ -139,6 +146,10 @@ The project explores:
 - **Intersection (∩)**
 
 - **Difference (−)**
+
+- **Product Cartesien (×)**
+
+- **Division (÷)**
 
 
 ---
@@ -334,15 +345,17 @@ JOIN Course
 
 ## Project Structure
 
+
 ```text
 kcodd/
 ├── src/
-│   ├── core/           # AST node definitions and core logic
-│   ├── lexer/          # Lexical analysis
-│   ├── parser/         # Syntax parsing
-│   ├── sqlgenerator/   # SQL code generation
-│   ├── transpiler/     # Main transpilation service
-│   └── grammar/        # Formal grammar definitions
+│   ├── core/            # AST node definitions and core logic
+│   ├── lexer/           # Lexical analysis
+│   ├── parser/          # Syntax parsing
+│   ├── transformer/     # AST transformation / optimization layer
+│   ├── sqlgenerator/    # SQL code generation
+│   ├── transpiler/      # Main transpilation service
+│   └── grammar/         # Formal grammar definitions
 │
 ├── playground/
 │   ├── cli/            # Command-line playground
@@ -367,9 +380,11 @@ flowchart TD
 
     D --> E[Abstract Syntax Tree]
 
-    E --> F[SQL Generator]
+    E --> F[Transformer Layer]
 
-    F --> I[Generated SQL Query]
+    F --> G[SQL Generator]
+
+    G --> H[Generated SQL Query]
 ```
 
 ---
@@ -391,10 +406,13 @@ flowchart LR
 
     F --> G[AST]
 
-    G --> H[SQL Generator]
+    G --> H[Transformer Layer]
 
-    H --> I[SQL Output]
+    H --> I[SQL Generator]
+
+    I --> J[SQL Output]
 ```
+
 ---
 
 # Grammar
@@ -431,15 +449,14 @@ intersection ::= expression "∩" expression
 difference ::= expression "−" expression
 ```
 
+
 See [`src/grammar/grammar.ebnf`](src/grammar/grammar.ebnf) for the complete formal grammar.
 
 ---
 
 ## Planned Features
 
-- Cartesian Product (×)
 - Outer Joins: Left (⟕), Right (⟖), Full (⟗)
-- Division (÷)
 - Duplicate Elimination (δ)
 - Aggregation & Grouping (γ)
 - Sorting (τ)

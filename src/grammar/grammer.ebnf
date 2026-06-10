@@ -1,7 +1,12 @@
+# Grammar
+
+```ebnf
 expression ::= projection
              | selection
              | natural-join
              | theta-join
+             | cartesian-product
+             | division
              | rename
              | union
              | intersection
@@ -9,13 +14,9 @@ expression ::= projection
              | relation
              | "(" expression ")"
 
-
-
 projection ::= "π" 
                "[" attribute_list "]"
                "(" expression ")"
-
-
 
 selection ::= "σ"
               "[" condition "]"
@@ -23,24 +24,25 @@ selection ::= "σ"
 
 natural-join ::= expression "⋈" expression  
 
-theta-join ::= expression  "⋈θ" "[" condition "]" expression 
+theta-join ::= expression "⋈θ" "[" condition "]" expression 
+
+cartesian-product ::= expression "×" expression
+
+division ::= expression "÷" expression
 
 union ::= expression "∪" expression
+
 intersection ::= expression "∩" expression
+
 difference ::= expression "−" expression
-
-
 
 rename ::= "ρ"
            identifier
            "(" expression ")"
 
-
 relation ::= identifier
 
-
 attribute_list ::= identifier ("," identifier)*
-
 
 condition ::= disjunction
 
@@ -54,24 +56,21 @@ negation_expr_inner ::= "¬" negation_expr_inner
                       | comparison
                       | "(" condition ")"
 
-
 comparison ::= operand comparator operand
 
 operand ::= identifier | literal
 
 comparator ::= "=" | "≠" | "<" | ">" | "<=" | ">="
 
+and_op ::= "∧"
 
-and_op ::=  "∧"
-
-or_op  ::=  "∨"
+or_op  ::= "∨"
 
 negation ::= "¬"
-
 
 identifier ::= letter (letter | digit | "_")*
 
 literal ::= number | string
 
 number ::= digit+
-
+```
