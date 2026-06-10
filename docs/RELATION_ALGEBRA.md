@@ -393,7 +393,7 @@ R ⋈θ[condition] S
 #### 1.5.1 Equi-join (equality theta)
 
 ```
-Student ⋈[Student.dept_id = Department.id] Department
+Student ⋈θ[Student.dept_id = Department.id] Department
 ```
 
 ```sql
@@ -408,7 +408,7 @@ JOIN Department
 #### 1.5.2 Non-equi join
 
 ```
-Student ⋈[Student.gpa > 3] Enrolled
+Student ⋈θ[Student.gpa > 3] Enrolled
 ```
 
 ```sql
@@ -423,7 +423,7 @@ JOIN Enrolled
 #### 1.5.3 Theta join with selection
 
 ```
-σ [grade = 'A'] (Student ⋈[Student.id = Enrolled.student_id] Enrolled)
+σ [grade = 'A'] (Student ⋈θ[Student.id = Enrolled.student_id] Enrolled)
 ```
 
 ```sql
@@ -439,7 +439,7 @@ WHERE grade = 'A';
 #### 1.5.4 Theta join with projection
 
 ```
-π [name, title] (Student ⋈[Student.id = Enrolled.student_id] Enrolled ⋈[Enrolled.course_id = Course.id] Course)
+π [name, title] (Student ⋈θ[Student.id = Enrolled.student_id] Enrolled ⋈θ[Enrolled.course_id = Course.id] Course)
 ```
 
 ```sql

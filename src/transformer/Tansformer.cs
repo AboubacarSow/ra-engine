@@ -9,7 +9,7 @@ public class Transformer
     {
         ConditionNode previous = node.Condition;
         ExpressionNode newsource=node.Source;
-        while (newsource is not RelationNode)
+        while (newsource is not RelationNode or NaturalJoinNode)
         {
             if(newsource is SelectionNode s)
             {
@@ -21,6 +21,10 @@ public class Transformer
             {
                 newsource = projection.Source;
                 continue;
+            }
+            if(newsource is NaturalJoinNode)
+            {
+                return node;
             }
 
             if(newsource is CartesienProductNode cartesienProduct)

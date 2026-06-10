@@ -35,6 +35,7 @@ public class Parser
         return _current.Type switch
         {
             TokenType.JOIN => true,
+            TokenType.NATURAL_JOIN=> true,
             TokenType.DIFFERENCE =>true,
             TokenType.UNION => true,
             TokenType.INTERSECT => true,
@@ -74,7 +75,7 @@ public class Parser
         {
             TokenType.JOIN => new JoinNode(left,right),
             TokenType.CARTESIEN_PRODUCT => new CartesienProductNode(left, right),
-            TokenType.NATURAL_JOIN => new NaturalJoinNode(((RelationNode)left).Name,((RelationNode)right).Name),
+            TokenType.NATURAL_JOIN => new NaturalJoinNode(left,right),
             TokenType.THETA_JOIN => new ThetaJoinNode(left,right,condition),
             TokenType.DIFFERENCE => new DifferenceNode(left,right),
             TokenType.UNION => new UnionNode(left,right),

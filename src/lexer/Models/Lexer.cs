@@ -146,8 +146,8 @@ public class Lexer
 
         ['π'] = TokenType.PROJECT,
         ['σ'] = TokenType.SELECT,
-        ['⨝'] = TokenType.JOIN,
-        ['⋈'] = TokenType.JOIN,
+        ['⨝'] = TokenType.NATURAL_JOIN,
+        ['⋈'] = TokenType.NATURAL_JOIN,
         ['ρ'] = TokenType.RENAME,
         ['∪'] = TokenType.UNION,
         ['∩'] = TokenType.INTERSECT,
