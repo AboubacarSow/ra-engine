@@ -1,5 +1,4 @@
 namespace core.Nodes;
-
 public class AndNode : ConditionNode
 {
     public ConditionNode Left { get; }

@@ -8,16 +8,21 @@ public class Parser
 {
     private readonly Lexer _lexer;
     private Token _current;
+    private Token _previous;
     public Parser(Lexer lexer)
     {
         _lexer = lexer;
         _current = _lexer.NextToken();
+        _previous = null!;
     }
 
     private void Eat(TokenType type)
     {
         if (_current.Type == type)
+        {
+            _previous = _current;
             _current = _lexer.NextToken();
+        }
         else
             throw new Exception($"Expected {type}, got {_current.Type}");
     }
@@ -34,6 +39,8 @@ public class Parser
             TokenType.UNION => true,
             TokenType.INTERSECT => true,
             TokenType.THETA_JOIN => true,
+            TokenType.CARTESIEN_PRODUCT => true,
+            TokenType.DIVISION =>true,
             _ => false
         };
     }
@@ -66,12 +73,14 @@ public class Parser
         return type switch
         {
             TokenType.JOIN => new JoinNode(left,right),
+            TokenType.CARTESIEN_PRODUCT => new CartesienProductNode(left, right),
             TokenType.NATURAL_JOIN => new NaturalJoinNode(((RelationNode)left).Name,((RelationNode)right).Name),
             TokenType.THETA_JOIN => new ThetaJoinNode(left,right,condition),
             TokenType.DIFFERENCE => new DifferenceNode(left,right),
             TokenType.UNION => new UnionNode(left,right),
             TokenType.INTERSECT => new IntersectionNode(left,right),
-            _ => throw new Exception($"Unexpected token type: {type.ToString()}")
+            TokenType.DIVISION => new DivisionNode((ProjectionNode)left, (ProjectionNode)right),
+            _ => throw new Exception($"Building Binary node: Unexpected token type: {type.ToString()}")
         };
     }
     private ExpressionNode ParseExpression()
@@ -83,7 +92,7 @@ public class Parser
             TokenType.RENAME => ParseRename(),
             TokenType.LPAREN => ParseParenthesized(),
             TokenType.IDENTIFIER => ParseRelation(),
-            _ => throw new Exception($"Unexpected token: {_current.Type}")
+            _ => throw new Exception($"Unexpected token: {_current.Type} after {_previous.Type}")
         };
     }
 
@@ -96,11 +105,12 @@ public class Parser
         Eat(TokenType.IDENTIFIER);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new RenameNode(alias,source);
     }
+
     private ExpressionNode ParseProjection()
     {
         Eat(TokenType.PROJECT);
@@ -110,7 +120,7 @@ public class Parser
         Eat(TokenType.RSB);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new ProjectionNode(attributes, source);
@@ -160,7 +170,7 @@ public class Parser
         Eat(TokenType.RSB);
 
         Eat(TokenType.LPAREN);
-        var source = ParseExpression();
+        var source = ParseBinaryExpression();
         Eat(TokenType.RPAREN);
 
         return new SelectionNode(condition, source);
